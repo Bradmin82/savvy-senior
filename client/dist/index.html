@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savvy Senior Consulting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        :root {
+            --primary-gold: #C9A961;
+            --accent-gold: #D4B896;
+            --soft-blue: #A8C9DC;
+            --light-blue: #D4E4ED;
+            --cream: #F5F1E8;
+            --dark-text: #2C3E50;
+        }
+
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark-text);
+            cursor: pointer;
+        }
+
+        .logo-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+            background: white;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--light-blue), var(--cream));
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--primary-gold);
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary-gold);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
+        }
+
+        .cta-button:hover {
+            background: #B8925C;
+            transform: translateY(-2px);
+        }
+
+        .services-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            color: var(--dark-text);
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, var(--light-blue), white);
+            border: 2px solid var(--soft-blue);
+            border-radius: 1rem;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .service-card:hover {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 0.8rem;
+        }
+
+        .service-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .contact-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .contact-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-size: 2.8rem;
+            text-align: center;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .contact-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .contact-info-item .icon {
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info-item h4 {
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-form {
+            background: var(--light-blue);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            border: 2px solid var(--soft-blue);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 8px rgba(201, 169, 97, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        .submit-btn {
+            background: var(--primary-gold);
+            color: white;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: #B8925C;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-text), #1a1a1a);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-tagline {
+            color: var(--primary-gold);
+            font-style: italic;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand" onclick="showPage('home')">
+                <div class="logo-circle">
+                    <img src="/html/assets/SavvySeniorConsultingLogo.png" alt="Savvy Senior Consulting">
+                </div>
+                <span>Savvy Senior Consulting</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" onclick="showPage('services'); return false;">Services</a>
+                <a href="#" onclick="showPage('contact'); return false;">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-container">
+                <h1>Compassionate Care for Your Loved Ones</h1>
+                <p class="tagline">Experience. Guidance. Solutions.</p>
+                <p>Professional senior care services in Orange County, California</p>
+                <button class="cta-button" onclick="showPage('services')">Explore Our Services</button>
+            </div>
+        </section>
+        <section class="services-section">
+            <div class="services-container">
+                <h2 class="section-title">Our Services</h2>
+                <div class="services-grid" id="homeServicesGrid"></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="services" class="page">
+        <section class="services-section">
+            <div class="services-container">
+                <h2 class="section-title">All Services</h2>
+                <div class="services-grid" id="allServicesGrid"></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="contact" class="page">
+        <section class="contact-section">
+            <div class="contact-container">
+                <h2 class="contact-title">Get in Touch</h2>
+                <p class="contact-subtitle">Ready to learn more? Contact us today for a free consultation</p>
+
+                <div class="contact-info-grid">
+                    <div class="contact-info-item">
+                        <div class="icon">📞</div>
+                        <h4>Phone</h4>
+                        <p>(949) 456-3310</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="icon">✉️</div>
+                        <h4>Email</h4>
+                        <p>bweldy82@gmail.com</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="icon">📍</div>
+                        <h4>Service Area</h4>
+                        <p>Orange County, California</p>
+                    </div>
+                </div>
+
+                <div id="contactMessages"></div>
+
+                <div class="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" id="name" placeholder="Your Name *" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Your Email *" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="tel" id="phone" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <select id="service">
+                                <option value="">Select Service of Interest</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <textarea id="message" placeholder="Tell us about your needs..."></textarea>
+                        </div>
+                    </div>
+                    <button class="submit-btn" onclick="submitForm()">Send Inquiry</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Savvy Senior Consulting. All rights reserved.</p>
+        <p class="footer-tagline">Experience. Guidance. Solutions.</p>
+        <p style="font-size: 0.9rem; margin-top: 1.5rem;">Serving Orange County, California</p>
+    </footer>
+
+    <script>
+        const services = [
+            { name: 'Companionship & Care', description: 'Caring support to combat loneliness', icon: '👥' },
+            { name: 'Personal Care Assistance', description: 'Help with daily living activities', icon: '🏠' },
+            { name: 'Meal Preparation', description: 'Nutritious meals tailored to dietary needs', icon: '🍲' },
+            { name: 'Household Management', description: 'Light housekeeping and maintenance', icon: '🧹' },
+            { name: 'Transportation & Errands', description: 'Safe transportation to appointments', icon: '🚗' },
+            { name: 'Pet Care Support', description: 'Help caring for beloved pets', icon: '🐕' }
+        ];
+
+        function renderServices() {
+            const homeGrid = document.getElementById('homeServicesGrid');
+            const allGrid = document.getElementById('allServicesGrid');
+            const select = document.getElementById('service');
+
+            const html = services.map(s => `
+                <div class="service-card">
+                    <div class="service-icon">${s.icon}</div>
+                    <div class="service-name">${s.name}</div>
+                    <div class="service-description">${s.description}</div>
+                </div>
+            `).join('');
+
+            if (homeGrid) homeGrid.innerHTML = html;
+            if (allGrid) allGrid.innerHTML = html;
+            if (select) {
+                select.innerHTML = '<option value="">Select Service of Interest</option>' + 
+                    services.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+            }
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        async function submitForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const service = document.getElementById('service').value;
+            const message = document.getElementById('message').value;
+            const messagesDiv = document.getElementById('contactMessages');
+
+            messagesDiv.innerHTML = '';
+
+            if (!name || !email) {
+                messagesDiv.innerHTML = '<div class="error-message">Please fill in all required fields</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, serviceInterest: service, message })
+                });
+
+                if (response.ok) {
+                    messagesDiv.innerHTML = '<div class="success-message">Thank you! We will contact you soon.</div>';
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('service').value = '';
+                    document.getElementById('message').value = '';
+                } else {
+                    messagesDiv.innerHTML = '<div class="error-message">Error sending inquiry. Please try again.</div>';
+                }
+            } catch (error) {
+                messagesDiv.innerHTML = '<div class="error-message">Error sending inquiry. Please try again.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderServices);
+    </script>
+</body>
+</html>
