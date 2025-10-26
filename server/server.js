@@ -8,6 +8,10 @@ dotenv.config();
 
 const app = express();
 
+// Set EJS as view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -33,7 +37,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });
 });
 
-// Page Routes (must come after static files and API routes)
+// Page Routes
 app.use('/', require('./routes/pages'));
 
 const PORT = process.env.PORT || 5000;
