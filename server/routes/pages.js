@@ -108,6 +108,7 @@ router.get('/services/:slug', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${service.name} - Savvy Senior Consulting</title>
+    <link rel="shortcut icon" type="image/ico/jpg" href="/assets/SavvySeniorConsultingLogo.png"/>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
