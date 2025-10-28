@@ -1,0 +1,104 @@
+<%- include('../partials/header', { title: 'Contact Us', page: 'contact' }) %>
+
+<section class="contact-section">
+    <div class="contact-container">
+        <h1 class="contact-title">Get in Touch</h1>
+        <p class="contact-subtitle">Ready to learn more? Contact us today for a free consultation</p>
+
+        <div class="contact-info-grid">
+            <div class="contact-info-item">
+                <div class="icon">📞</div>
+                <h4>Phone</h4>
+                <p><a href="tel:9494563310" style="color: inherit; text-decoration: none;">(949) 456-3310</a></p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 0.5rem;">Available 24/7</p>
+            </div>
+            <div class="contact-info-item">
+                <div class="icon">✉️</div>
+                <h4>Email</h4>
+                <p><a href="mailto:bweldy82@gmail.com" style="color: inherit; text-decoration: none;">bweldy82@gmail.com</a></p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 0.5rem;">We respond within 24 hours</p>
+            </div>
+            <div class="contact-info-item">
+                <div class="icon">📍</div>
+                <h4>Service Area</h4>
+                <p>Orange County, California</p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 0.5rem;">Serving all communities</p>
+            </div>
+        </div>
+
+        <div id="contactMessages"></div>
+
+        <div class="contact-form">
+            <h3 style="margin-bottom: 1.5rem; color: var(--dark-text);">Send Us a Message</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Your Name *" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Your Email *" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="tel" id="phone" placeholder="Phone Number">
+                </div>
+                <div class="form-group">
+                    <select id="service">
+                        <option value="">Select Service of Interest</option>
+                        <% services.forEach(service => { %>
+                            <option value="<%= service.name %>"><%= service.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <textarea id="message" placeholder="Tell us about your needs..."></textarea>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="submitForm()">Send Inquiry</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function submitForm() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const service = document.getElementById('service').value;
+        const message = document.getElementById('message').value;
+        const messagesDiv = document.getElementById('contactMessages');
+
+        messagesDiv.innerHTML = '';
+
+        if (!name || !email) {
+            messagesDiv.innerHTML = '<div class="error-message">Please fill in all required fields (marked with *)</div>';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/inquiries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, phone, serviceInterest: service, message })
+            });
+
+            if (response.ok) {
+                messagesDiv.innerHTML = '<div class="success-message">Thank you for your inquiry! We will contact you soon.</div>';
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('service').value = '';
+                document.getElementById('message').value = '';
+            } else {
+                messagesDiv.innerHTML = '<div class="error-message">Error sending inquiry. Please try again or call us at (949) 456-3310.</div>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            messagesDiv.innerHTML = '<div class="error-message">Error sending inquiry. Please try again or call us at (949) 456-3310.</div>';
+        }
+    }
+</script>
+
+<%- include('../partials/footer') %>
