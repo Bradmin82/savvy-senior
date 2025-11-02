@@ -15,6 +15,7 @@ class Header extends HTMLElement {
                     <div class="nav-links">
                         <a href="/" class="${currentPath === '/' ? 'active' : ''}">Home</a>
                         <a href="/services" class="${currentPath.startsWith('/services') ? 'active' : ''}">Services</a>
+                        <a href="/blog" class="${currentPath.startsWith('/blog') ? 'active' : ''}">Blog</a>
                         <a href="/about" class="${currentPath === '/about' ? 'active' : ''}">About</a>
                         <a href="/contact" class="${currentPath === '/contact' ? 'active' : ''}">Contact</a>
                     </div>

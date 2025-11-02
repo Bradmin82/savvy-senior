@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Savvy Senior Consulting</title>
+    <link rel="shortcut icon" type="image/ico/jpg" href="/assets/SavvySeniorConsultingLogo.png"/>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/components/header.js"></script>
+    <script src="/components/footer.js"></script>
+</head>
+<body>
+    <app-header></app-header>
+
+    <section class="blog-section">
+        <div class="blog-container">
+            <h1 class="section-title">Our Blog</h1>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem; font-size: 1.2rem; color: #666;">
+                Tips, insights, and stories about senior care in Orange County
+            </p>
+            
+            <div id="blogPosts" class="blog-grid">
+                <p style="text-align: center; color: #666;">Loading posts...</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch('/api/blog');
+                const posts = await response.json();
+                
+                const blogGrid = document.getElementById('blogPosts');
+                
+                if (posts.length === 0) {
+                    blogGrid.innerHTML = '<p style="text-align: center; color: #666;">No blog posts yet. Check back soon!</p>';
+                    return;
+                }
+                
+                blogGrid.innerHTML = posts.map(post => `
+                    <article class="blog-card">
+                        ${post.featuredImage ? `
+                            <img src="${post.featuredImage}" alt="${post.title}" class="blog-card-image">
+                        ` : ''}
+                        <div class="blog-card-content">
+                            <h2 class="blog-card-title">
+                                <a href="/blog/${post.slug}">${post.title}</a>
+                            </h2>
+                            <div class="blog-card-meta">
+                                <span>${post.author}</span>
+                                <span>•</span>
+                                <span>${new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            </div>
+                            <p class="blog-card-excerpt">${post.excerpt}</p>
+                            <a href="/blog/${post.slug}" class="blog-read-more">Read More →</a>
+                        </div>
+                    </article>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading blog posts:', error);
+                document.getElementById('blogPosts').innerHTML = '<p style="text-align: center; color: #666;">Error loading posts. Please try again later.</p>';
+            }
+        }
+
+        // Load posts when page loads
+        document.addEventListener('DOMContentLoaded', loadBlogPosts);
+    </script>
+
+    <app-footer></app-footer>
+</body>
+</html>

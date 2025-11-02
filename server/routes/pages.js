@@ -108,6 +108,7 @@ router.get('/services/:slug', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${service.name} - Savvy Senior Consulting</title>
+    <link rel="shortcut icon" type="image/ico/jpg" href="/assets/SavvySeniorConsultingLogo.png"/>
     <link rel="stylesheet" href="/css/style.css">
     <script src="/components/header.js"></script>
     <script src="/components/footer.js"></script>
@@ -165,3 +166,70 @@ router.get('/about', (req, res) => {
 });
 
 module.exports = router;
+
+// Blog listing page
+router.get('/blog', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/dist/pages/blog.html'));
+});
+
+// Individual blog post page (dynamic)
+router.get('/blog/:slug', async (req, res) => {
+  try {
+    const BlogPost = require('../models/BlogPost');
+    const post = await BlogPost.findOne({ slug: req.params.slug, published: true });
+    
+    if (!post) {
+      return res.status(404).send('Blog post not found');
+    }
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${post.title} - Savvy Senior Consulting Blog</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/components/header.js"></script>
+    <script src="/components/footer.js"></script>
+</head>
+<body>
+    <app-header></app-header>
+
+    <article class="blog-post-detail">
+        <div class="blog-post-container">
+            <a href="/blog" style="color: var(--primary-gold); text-decoration: none; font-weight: 600; display: inline-block; margin-bottom: 2rem;">← Back to Blog</a>
+            
+            ${post.featuredImage ? `
+                <img src="${post.featuredImage}" alt="${post.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 1rem; margin-bottom: 2rem;">
+            ` : ''}
+            
+            <h1 class="blog-post-title">${post.title}</h1>
+            
+            <div class="blog-post-meta">
+                <span>By ${post.author}</span>
+                <span>•</span>
+                <span>${new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+            
+            <div class="blog-post-content">
+                ${post.content}
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--soft-blue);">
+                <p style="margin-bottom: 1rem;">Interested in our services?</p>
+                <a href="/contact" class="cta-button">Contact Us Today</a>
+            </div>
+        </div>
+    </article>
+
+    <app-footer></app-footer>
+</body>
+</html>
+    `;
+    
+    res.send(html);
+  } catch (err) {
+    res.status(500).send('Error loading blog post');
+  }
+});
