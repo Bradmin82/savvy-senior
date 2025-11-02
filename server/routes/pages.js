@@ -109,24 +109,12 @@ router.get('/services/:slug', (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${service.name} - Savvy Senior Consulting</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="/components/header.js"></script>
+    <script src="/components/footer.js"></script>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="nav-brand">
-                <div class="logo-circle">
-                    <img src="/html/assets/SavvySeniorConsultingLogo.png" alt="Savvy Senior Consulting">
-                </div>
-                <span>Savvy Senior Consulting</span>
-            </a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/services">Services</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-            </div>
-        </div>
-    </nav>
+    <app-header></app-header>
+
 
     <section class="services-section">
         <div class="services-container">
@@ -158,11 +146,7 @@ router.get('/services/:slug', (req, res) => {
         </div>
     </section>
 
-    <footer>
-        <p>© 2025 Savvy Senior Consulting. All rights reserved.</p>
-        <p class="footer-tagline">Experience. Guidance. Solutions.</p>
-        <p style="font-size: 0.9rem; margin-top: 1.5rem;">Serving Orange County, California | (949) 456-3310</p>
-    </footer>
+    <app-footer></app-footer>
 </body>
 </html>
   `;
