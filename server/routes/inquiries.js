@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Inquiry = require('../models/Inquiry');
 const nodemailer = require('nodemailer');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // Configure email transporter
 const transporter = nodemailer.createTransport({
@@ -12,11 +13,8 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Create inquiry
+// Create inquiry (public)
 router.post('/', async (req, res) => {
-
-console.log('Received inquiry data:', req.body);
-
   const inquiry = new Inquiry({
     name: req.body.name,
     email: req.body.email,
@@ -76,8 +74,8 @@ console.log('Received inquiry data:', req.body);
   }
 });
 
-// Get all inquiries
-router.get('/', async (req, res) => {
+// Get all inquiries (admin only)
+router.get('/', authenticateAdmin, async (req, res) => {
   try {
     const inquiries = await Inquiry.find().sort({ createdAt: -1 });
     res.json(inquiries);
@@ -86,8 +84,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single inquiry
-router.get('/:id', async (req, res) => {
+// Get single inquiry (admin only)
+router.get('/:id', authenticateAdmin, async (req, res) => {
   try {
     const inquiry = await Inquiry.findById(req.params.id);
     if (!inquiry) return res.status(404).json({ message: 'Inquiry not found' });
@@ -97,8 +95,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update inquiry status
-router.patch('/:id', async (req, res) => {
+// Update inquiry status (admin only)
+router.patch('/:id', authenticateAdmin, async (req, res) => {
   try {
     const inquiry = await Inquiry.findById(req.params.id);
     if (!inquiry) return res.status(404).json({ message: 'Inquiry not found' });

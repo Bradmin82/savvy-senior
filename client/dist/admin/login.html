@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Savvy Senior Consulting</title>
+    <link rel="shortcut icon" type="image/png" href="/assets/SavvySeniorConsultingLogo.png"/>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--light-blue), var(--cream));
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--dark-text);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gold);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #B8925C;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: var(--primary-gold);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="/assets/SavvySeniorConsultingLogo.png" alt="Savvy Senior Consulting">
+            </div>
+            <h1 class="login-title">Admin Login</h1>
+            
+            <div id="errorMessage"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            
+            <div class="back-link">
+                <a href="/">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminUser', JSON.stringify(data.admin));
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    errorDiv.innerHTML = `<div class="error-message">${data.message}</div>`;
+                }
+            } catch (error) {
+                errorDiv.innerHTML = '<div class="error-message">Login failed. Please try again.</div>';
+            }
+        });
+    </script>
+</body>
+</html>

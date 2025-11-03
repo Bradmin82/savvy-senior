@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Savvy Senior Consulting</title>
+    <link rel="shortcut icon" type="image/png" href="/assets/SavvySeniorConsultingLogo.png"/>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/admin/admin-styles.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <div class="sidebar-header">
+                    <img src="/assets/SavvySeniorConsultingLogo.png" alt="Logo">
+                    <h2>Admin Panel</h2>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <button @click="currentView = 'dashboard'" :class="{ active: currentView === 'dashboard' }">
+                        📊 Dashboard
+                    </button>
+                    <button @click="currentView = 'blog-list'" :class="{ active: currentView === 'blog-list' }">
+                        📝 Blog Posts
+                    </button>
+                    <button @click="currentView = 'pages-list'" :class="{ active: currentView === 'pages-list' }">
+                        📄 Pages
+                    </button>
+                    <button @click="currentView = 'assets'" :class="{ active: currentView === 'assets' }">
+                        🖼️ Assets
+                    </button>
+                    <button @click="currentView = 'inquiries'" :class="{ active: currentView === 'inquiries' }">
+                        📧 Inquiries
+                    </button>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <div class="admin-info">
+                        <p><strong>{{ adminUser.username }}</strong></p>
+                        <p>{{ adminUser.email }}</p>
+                    </div>
+                    <button @click="logout" class="logout-btn">Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="admin-main">
+                <div class="admin-header">
+                    <h1>{{ viewTitle }}</h1>
+                </div>
+
+                <!-- Dashboard View -->
+                <div v-if="currentView === 'dashboard'" class="dashboard-view">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Blog Posts</h3>
+                            <p class="stat-number">{{ stats.blogPosts }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pages</h3>
+                            <p class="stat-number">{{ stats.pages }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Inquiries</h3>
+                            <p class="stat-number">{{ stats.inquiries }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Assets</h3>
+                            <p class="stat-number">{{ stats.assets }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog List View -->
+                <div v-if="currentView === 'blog-list'" class="content-view">
+                    <div class="view-header">
+                        <button @click="createNewBlogPost" class="btn-primary">+ New Blog Post</button>
+                    </div>
+                    
+                    <div v-if="blogPosts.length === 0" class="empty-state">
+                        <p>No blog posts yet. Create your first one!</p>
+                    </div>
+                    
+                    <div v-else class="items-list">
+                        <div v-for="post in blogPosts" :key="post._id" class="item-card">
+                            <div class="item-content">
+                                <h3>{{ post.title }}</h3>
+                                <p>{{ post.excerpt }}</p>
+                                <div class="item-meta">
+                                    <span :class="post.published ? 'badge-success' : 'badge-draft'">
+                                        {{ post.published ? 'Published' : 'Draft' }}
+                                    </span>
+                                    <span>{{ formatDate(post.createdAt) }}</span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button @click="editBlogPost(post)" class="btn-secondary">Edit</button>
+                                <button @click="deleteBlogPost(post._id)" class="btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Editor View -->
+                <div v-if="currentView === 'blog-editor'" class="editor-view">
+                    <div class="view-header">
+                        <button @click="currentView = 'blog-list'" class="btn-secondary">← Back</button>
+                        <button @click="saveBlogPost" class="btn-primary">Save Post</button>
+                    </div>
+                    
+                    <div class="editor-form">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input v-model="currentBlogPost.title" type="text" @input="generateSlug" placeholder="Post title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Slug</label>
+                            <input v-model="currentBlogPost.slug" type="text" placeholder="post-slug">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Author</label>
+                            <input v-model="currentBlogPost.author" type="text" placeholder="Author name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Featured Image URL</label>
+                            <div class="input-with-button">
+                                <input v-model="currentBlogPost.featuredImage" type="text" placeholder="/uploads/image.jpg">
+                                <button @click="openAssetPicker('featuredImage')" class="btn-secondary">Browse</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Excerpt</label>
+                            <textarea v-model="currentBlogPost.excerpt" rows="3" placeholder="Brief summary..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Content (Markdown supported)</label>
+                            <textarea v-model="currentBlogPost.content" rows="15" placeholder="Write your content here..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input v-model="currentBlogPost.published" type="checkbox">
+                                Publish immediately
+                            </label>
+                        </div>
+                        
+                        <div class="editor-preview">
+                            <h3>Preview</h3>
+                            <div v-html="markdownPreview" class="preview-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pages List View -->
+                <div v-if="currentView === 'pages-list'" class="content-view">
+                    <div class="view-header">
+                        <button @click="createNewPage" class="btn-primary">+ New Page</button>
+                    </div>
+                    
+                    <div v-if="pages.length === 0" class="empty-state">
+                        <p>No pages yet. Create your first one!</p>
+                    </div>
+                    
+                    <div v-else class="items-list">
+                        <div v-for="page in pages" :key="page._id" class="item-card">
+                            <div class="item-content">
+                                <h3>{{ page.title }}</h3>
+                                <p>/{{ page.slug }}</p>
+                                <div class="item-meta">
+                                    <span :class="page.published ? 'badge-success' : 'badge-draft'">
+                                        {{ page.published ? 'Published' : 'Draft' }}
+                                    </span>
+                                    <span>{{ formatDate(page.createdAt) }}</span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button @click="editPage(page)" class="btn-secondary">Edit</button>
+                                <button @click="deletePage(page._id)" class="btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Editor View -->
+                <div v-if="currentView === 'page-editor'" class="editor-view">
+                    <div class="view-header">
+                        <button @click="currentView = 'pages-list'" class="btn-secondary">← Back</button>
+                        <button @click="savePage" class="btn-primary">Save Page</button>
+                    </div>
+                    
+                    <div class="editor-form">
+                        <div class="form-group">
+                            <label>Page Title</label>
+                            <input v-model="currentPage.title" type="text" @input="generatePageSlug" placeholder="Page title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Slug (URL)</label>
+                            <input v-model="currentPage.slug" type="text" placeholder="page-slug">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Meta Description</label>
+                            <input v-model="currentPage.metaDescription" type="text" placeholder="SEO description">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Content (HTML)</label>
+                            <textarea v-model="currentPage.content" rows="20" placeholder="<h1>Your content here</h1>"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input v-model="currentPage.published" type="checkbox">
+                                Publish page
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assets View -->
+                <div v-if="currentView === 'assets'" class="content-view">
+                    <div class="view-header">
+                        <input type="file" ref="fileInput" @change="uploadFile" accept="image/*" style="display: none">
+                        <button @click="$refs.fileInput.click()" class="btn-primary">+ Upload Image</button>
+                    </div>
+                    
+                    <div v-if="assets.length === 0" class="empty-state">
+                        <p>No assets uploaded yet.</p>
+                    </div>
+                    
+                    <div v-else class="assets-grid">
+                        <div v-for="asset in assets" :key="asset.filename" class="asset-card">
+                            <img :src="asset.url" :alt="asset.filename">
+                            <div class="asset-info">
+                                <p class="asset-filename">{{ asset.filename }}</p>
+                                <p class="asset-size">{{ formatFileSize(asset.size) }}</p>
+                            </div>
+                            <div class="asset-actions">
+                                <button @click="copyAssetUrl(asset.url)" class="btn-secondary">Copy URL</button>
+                                <button @click="deleteAsset(asset.filename)" class="btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inquiries View -->
+                <div v-if="currentView === 'inquiries'" class="content-view">
+                    <div v-if="inquiries.length === 0" class="empty-state">
+                        <p>No inquiries yet.</p>
+                    </div>
+                    
+                    <div v-else class="items-list">
+                        <div v-for="inquiry in inquiries" :key="inquiry._id" class="item-card">
+                            <div class="item-content">
+                                <h3>{{ inquiry.name }}</h3>
+                                <p><strong>Email:</strong> {{ inquiry.email }}</p>
+                                <p><strong>Phone:</strong> {{ inquiry.phone || 'N/A' }}</p>
+                                <p><strong>Service:</strong> {{ inquiry.serviceInterest || 'General' }}</p>
+                                <p><strong>Message:</strong> {{ inquiry.message }}</p>
+                                <div class="item-meta">
+                                    <span :class="'badge-' + inquiry.status">{{ inquiry.status }}</span>
+                                    <span>{{ formatDate(inquiry.createdAt) }}</span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <select @change="updateInquiryStatus(inquiry._id, $event.target.value)">
+                                    <option value="new" :selected="inquiry.status === 'new'">New</option>
+                                    <option value="contacted" :selected="inquiry.status === 'contacted'">Contacted</option>
+                                    <option value="resolved" :selected="inquiry.status === 'resolved'">Resolved</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Asset Picker Modal -->
+        <div v-if="showAssetPicker" class="modal" @click.self="showAssetPicker = false">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Select Asset</h2>
+                    <button @click="showAssetPicker = false" class="btn-close">×</button>
+                </div>
+                <div class="assets-grid">
+                    <div v-for="asset in assets" :key="asset.filename" 
+                         @click="selectAsset(asset.url)" 
+                         class="asset-card clickable">
+                        <img :src="asset.url" :alt="asset.filename">
+                        <p class="asset-filename">{{ asset.filename }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin/dashboard.js"></script>
+</body>
+</html>

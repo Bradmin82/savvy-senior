@@ -28,6 +28,9 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/blog', require('./routes/blog'));
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/upload', require('./routes/upload'));
+app.use('/api/pages', require('./routes/pages-api'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

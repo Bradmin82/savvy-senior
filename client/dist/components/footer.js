@@ -9,7 +9,7 @@ class Footer extends HTMLElement {
             <a href="mailto:bweldy82@gmail.com" style="color: #fff; text-decoration: none;">bweldy82@gmail.com</a>
             </p>
             <p class="footer-tagline" style="margin-top: 1.5rem;">Experience. Guidance. Solutions.</p>
-            <p style="font-size: 0.9rem; margin-top: 1.5rem;">© 2025 Savvy Senior Consulting. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: 1.5rem;"><a href="/admin/login.html" target="_blank" style="cursor: default; text-decoration: none; color: #fff;">©</a> 2025 Savvy Senior Consulting. All rights reserved.</p>
             </footer>
         `;
     }
