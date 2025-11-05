@@ -100,18 +100,6 @@ router.get('/services/:slug', (req, res) => {
   if (!service) {
     return res.status(404).send('Service not found');
   }
-
-  const analyticsHead = `<!-- Google Tag Manager -->
-      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-WHM6VF5J');</script>
-      <!-- End Google Tag Manager -->`;
-  const analyticsBody = `<!-- Google Tag Manager (noscript) -->
-      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHM6VF5J"
-      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-      <!-- End Google Tag Manager (noscript) -->`;
   
   const html = `
 <!DOCTYPE html>
@@ -120,7 +108,13 @@ router.get('/services/:slug', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${service.name} - Savvy Senior Consulting</title>
-    ${analyticsHead}
+    <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WHM6VF5J');</script>
+      <!-- End Google Tag Manager -->
 
     <link rel="shortcut icon" type="image/ico/jpg" href="/assets/SavvySeniorConsultingLogo.png"/>
     <link rel="stylesheet" href="/css/style.css">
@@ -128,7 +122,10 @@ router.get('/services/:slug', (req, res) => {
     <script src="/components/footer.js"></script>
 </head>
 <body>
-    ${analyticsBody}
+    <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHM6VF5J"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
 
     <app-header></app-header>
 
@@ -206,13 +203,24 @@ router.get('/blog/:slug', async (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="/assets/SavvySeniorConsultingLogo.png"/>
     <title>${post.title} - Savvy Senior Consulting Blog</title>
-    ${analyticsHead}
+    <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WHM6VF5J');</script>
+      <!-- End Google Tag Manager -->
+      
     <link rel="stylesheet" href="/css/style.css">
     <script src="/components/header.js"></script>
     <script src="/components/footer.js"></script>
 </head>
 <body>
-    ${analyticsBody}
+    <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHM6VF5J"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+      
     <app-header></app-header>
 
     <article class="blog-post-detail">
